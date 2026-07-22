@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Telegram Earn & Watch Mini App</title>
     <!-- Telegram WebApp SDK -->
+    // টেলিগ্রাম ওয়েব অ্যাপ অবজেক্ট ইনিশিয়ালাইজ করা
+const tg = window.Telegram.WebApp;
+tg.expand(); // মিনি অ্যাপটি ফুল স্ক্রিন করার জন্য
+
+// যখন কেউ "Full Video" বা "Demo Video" বাটনে ক্লিক করবে
+function sendDataToBot(actionType, videoTitle, videoUrl) {
+    // যে ডেটাগুলো আপনি বটের কাছে পাঠাতে চান
+    const dataToSend = {
+        action: actionType,       // "get_full_video" অথবা "get_demo_video"
+        video_title: videoTitle,  // ভিডিওর নাম
+        target_url: videoUrl      // ভিডিওর লিংক বা ফাইল আইডি
+    };
+
+    // টেলিগ্রামের মাধ্যমে পাইথন বটে ডেটা সেন্ড করা
+    tg.sendData(JSON.stringify(dataToSend));
+    
+    // ডেটা পাঠানোর পর মিনি অ্যাপ বন্ধ হয়ে যাবে এবং বটে মেসেজ চলে যাবে
+    tg.close();
+}
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
