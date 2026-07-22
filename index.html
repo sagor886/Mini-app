@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telegram Earn & Watch Mini App</ttitleitle>
+    <title>Telegram Earn & Watch Mini App</title>
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Tailwind CSS CDN -->
@@ -178,7 +178,7 @@
                         </div>
                         <div>
                             <label class="text-xs font-semibold text-slate-400 block mb-1">Amount (USD $)</label>
-                            <input type="number" id="wwithdrawAmountwithdrawAmountithdrawAmount" placeholder="1.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                            <input type="number" id="withdrawAmount" placeholder="1.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
                         </div>
                         <button onclick="processWithdrawal()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 rounded-xl shadow-lg transition text-sm">
                             Submit Withdrawal Request
@@ -206,11 +206,11 @@
                     <div class="grid grid-cols-2 gap-3 mt-5 pt-4 border-t border-slate-800/80">
                         <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
                             <p class="text-[11px] text-slate-400">Total Earned</p>
-                            <p class="text-lg font-bold text-emerald-400">$2.45</p>
+                            <p class="text-lg font-bold text-emerald-400" id="profileEarned">$0.00</p>
                         </div>
                         <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
                             <p class="text-[11px] text-slate-400">Total Referrals</p>
-                            <p class="text-lg font-bold text-indigo-400">12 Users</p>
+                            <p class="text-lg font-bold text-indigo-400">0 Users</p>
                         </div>
                     </div>
                 </div>
@@ -223,14 +223,13 @@
                     </div>
                     <p class="text-xs text-slate-400">Get 10% lifetime commission on every task completed by your referred friends.</p>
                     <div class="flex gap-2">
-                        <input type="text" readonly value="https://t.me/BotName?start=ref_12345" class="bg-slate-900 border border-slate-700 text-xs text-indigo-300 rounded-xl px-3 py-2 w-full focus:outline-none">
+                        <input type="text" id="refLinkInput" readonly value="https://t.me/BotName?start=ref_12345" class="bg-slate-900 border border-slate-700 text-xs text-indigo-300 rounded-xl px-3 py-2 w-full focus:outline-none">
                         <button onclick="copyRefLink()" class="bg-indigo-600 text-white font-bold text-xs px-4 py-2 rounded-xl hover:bg-indigo-700 transition">Copy</button>
                     </div>
                 </div>
             </section>
 
         </div>
-
 
         <!-- ADMIN PANEL VIEW (Hidden by default) -->
         <div id="adminViews" class="hidden space-y-5">
@@ -256,14 +255,6 @@
             <div id="adm-tasks" class="adm-subview space-y-4">
                 <div class="glass p-4 rounded-2xl border border-slate-800 space-y-3">
                     <h3 class="font-bold text-sm text-indigo-300">Create New Task</h3>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Task Type</label>
-                        <select id="newTaskType" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                            <option value="telegram">Telegram Channel/Group</option>
-                            <option value="website">Website Visit</option>
-                            <option value="direct">Direct Link / Monetag</option>
-                        </select>
-                    </div>
                     <div>
                         <label class="text-[11px] text-slate-400 block mb-1">Task Title</label>
                         <input type="text" id="newTaskTitle" placeholder="Join Official Channel" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
@@ -302,7 +293,7 @@
                         <div>
                             <label class="text-[11px] text-slate-400 block mb-1">Category</label>
                             <select id="newVidCat" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                                <option>Viral Video</option>
+                                <option>Viral Clip</option>
                                 <option>Trending</option>
                                 <option>Teasers</option>
                             </select>
@@ -321,40 +312,24 @@
                 <div class="glass p-4 rounded-2xl border border-slate-800 space-y-3">
                     <h3 class="font-bold text-sm text-indigo-300">Ad Network Integration</h3>
                     <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Network Name</label>
-                        <input type="text" placeholder="Monetag / Adsterra Direct" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                    </div>
-                    <div>
                         <label class="text-[11px] text-slate-400 block mb-1">Direct Link / Script Tag</label>
                         <textarea rows="3" placeholder="https://www.highrevenuegate.com/..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200"></textarea>
                     </div>
-                    <button onclick="alert('Ad Configuration Saved!')" class="w-full bg-amber-600 hover:bg-amber-700 font-bold text-xs py-2.5 rounded-xl text-white transition">Save Ad Rotation</button>
+                    <button onclick="showToast('Ad Configuration Saved!')" class="w-full bg-amber-600 hover:bg-amber-700 font-bold text-xs py-2.5 rounded-xl text-white transition">Save Ad Rotation</button>
                 </div>
             </div>
 
             <!-- Admin Tab 4: Core Settings -->
             <div id="adm-settings" class="adm-subview space-y-4 hidden">
                 <div class="glass p-4 rounded-2xl border border-slate-800 space-y-3">
-                    <h3 class="font-bold text-sm text-indigo-300">Bot & Server Speed Tuning</h3>
+                    <h3 class="font-bold text-sm text-indigo-300">Bot & Server Settings</h3>
                     <div>
                         <label class="text-[11px] text-slate-400 block mb-1">Auto-Delete Video Timer (Minutes)</label>
                         <input type="number" value="15" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
                     </div>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">User to User Delay (Seconds)</label>
-                        <input type="number" value="5" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Notification Speed Batch</label>
-                        <select class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                            <option>10x Normal Speed</option>
-                            <option>20x High Speed</option>
-                        </select>
-                    </div>
-                    <button onclick="alert('Core Settings Updated!')" class="w-full bg-emerald-600 hover:bg-emerald-700 font-bold text-xs py-2.5 rounded-xl text-white transition">Update Core Settings</button>
+                    <button onclick="showToast('Core Settings Updated!')" class="w-full bg-emerald-600 hover:bg-emerald-700 font-bold text-xs py-2.5 rounded-xl text-white transition">Update Core Settings</button>
                 </div>
             </div>
-
         </div>
 
     </main>
@@ -389,7 +364,6 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // State Management
         let appState = {
             balance: 0.85,
             isAdmin: false,
@@ -419,7 +393,7 @@
                 {
                     id: 1,
                     title: 'Join Telegram Channel',
-                    url: 'https://t.me/example',
+                    url: 'https://t.me',
                     reward: 0.05,
                     timer: 10,
                     completed: false
@@ -435,35 +409,37 @@
             ]
         };
 
-        // Initialize Telegram WebApp
         window.addEventListener('DOMContentLoaded', () => {
             if (window.Telegram && window.Telegram.WebApp) {
                 const tg = window.Telegram.WebApp;
+                tg.ready();
                 tg.expand();
                 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                     const u = tg.initDataUnsafe.user;
-                    document.getElementById('userName').innerText = `${u.first_name || ''} ${u.last_name || ''}`;
-                    document.getElementById('profileName').innerText = `${u.first_name || ''} ${u.last_name || ''}`;
-                    document.getElementById('userTag').innerText = u.username ? `@${u.username}` : '@user';
-                    document.getElementById('profileTag').innerText = u.username ? `@${u.username}` : '@user';
-                    document.getElementById('userAvatar').innerText = u.first_name ? u.first_name[0] : 'U';
-                    document.getElementById('profileAvatar').innerText = u.first_name ? u.first_name[0] : 'U';
+                    const name = `${u.first_name || ''} ${u.last_name || ''}`;
+                    const tag = u.username ? `@${u.username}` : '@user';
+                    const avatar = u.first_name ? u.first_name[0] : 'U';
+
+                    document.getElementById('userName').innerText = name;
+                    document.getElementById('profileName').innerText = name;
+                    document.getElementById('userTag').innerText = tag;
+                    document.getElementById('profileTag').innerText = tag;
+                    document.getElementById('userAvatar').innerText = avatar;
+                    document.getElementById('profileAvatar').innerText = avatar;
+                    document.getElementById('refLinkInput').value = `https://t.me/BotName?start=ref_${u.id}`;
                 }
             }
             renderApp();
         });
 
-        // Render Functions
         function renderApp() {
-            // Update Balance Display
             document.getElementById('userBalance').innerText = `$${appState.balance.toFixed(2)}`;
             document.getElementById('withdrawBalance').innerText = `$${appState.balance.toFixed(2)}`;
-
+            document.getElementById('profileEarned').innerText = `$${appState.balance.toFixed(2)}`;
             renderVideos();
             renderTasks();
         }
 
-        // Render Video Feed
         function renderVideos() {
             const feed = document.getElementById('videoFeed');
             feed.innerHTML = '';
@@ -503,7 +479,6 @@
             });
         }
 
-        // Render Tasks
         function renderTasks() {
             const list = document.getElementById('taskList');
             list.innerHTML = '';
@@ -526,7 +501,6 @@
             });
         }
 
-        // User Tab Switch
         function switchTab(tab) {
             appState.activeTab = tab;
             ['home', 'tasks', 'withdraw', 'profile'].forEach(t => {
@@ -537,119 +511,77 @@
             document.getElementById(`nav-${tab}`).classList.add('active-tab');
         }
 
-        // Ad Unlock Logic
         function watchAdForVideo(id) {
-            const v = appState.videos.find(item => item.id === id);
-            if (!v) return;
-            
-            showToast('Opening Ad link... Please wait 5s');
-            window.open('https://monetag.com', '_blank');
-
-            setTimeout(() => {
-                v.adsWatched += 1;
+            const v = appState.videos.find(x => x.id === id);
+            if (v) {
+                v.adsWatched++;
+                showToast(`Watched Ad (${v.adsWatched}/${v.adsNeeded})`);
                 if (v.adsWatched >= v.adsNeeded) {
                     v.unlocked = true;
-                    showToast('🎉 Video Unlocked Successfully!');
-                } else {
-                    showToast(`Ad Watched! (${v.adsWatched}/${v.adsNeeded})`);
+                    showToast('Video Unlocked! 🎉');
                 }
                 renderVideos();
-            }, 3000);
+            }
         }
 
         function playVideo(title) {
-            alert(`▶️ Playing Video: ${title}\n(In Telegram Player)`);
+            showToast(`Playing: ${title}`);
         }
 
-        // Task Timer & Reward Logic
         function startTask(id) {
-            const t = appState.tasks.find(item => item.id === id);
-            if (!t || t.completed) return;
-
-            window.open(t.url, '_blank');
-            const btn = document.getElementById(`taskBtn-${id}`);
-            let left = t.timer;
-
-            btn.disabled = true;
-            btn.className = "bg-slate-700 text-slate-300 text-xs font-bold px-4 py-2 rounded-xl";
-
-            const interval = setInterval(() => {
-                left--;
-                btn.innerText = `Wait ${left}s...`;
-                if (left <= 0) {
-                    clearInterval(interval);
-                    t.completed = true;
-                    appState.balance += t.reward;
-                    showToast(`+$${t.reward.toFixed(2)} Added to Balance!`);
-                    renderApp();
-                }
-            }, 1000);
+            const t = appState.tasks.find(x => x.id === id);
+            if (t && !t.completed) {
+                window.open(t.url, '_blank');
+                let count = t.timer;
+                const btn = document.getElementById(`taskBtn-${id}`);
+                btn.disabled = true;
+                const interval = setInterval(() => {
+                    count--;
+                    btn.innerText = `Wait ${count}s...`;
+                    if (count <= 0) {
+                        clearInterval(interval);
+                        t.completed = true;
+                        appState.balance += t.reward;
+                        showToast(`Task Complete! Earned +$${t.reward}`);
+                        renderApp();
+                    }
+                }, 1000);
+            }
         }
 
-        // Withdraw Process
         function selectPaymentMethod(method) {
             appState.paymentMethod = method;
-            document.querySelectorAll('.pm-btn').forEach(btn => {
-                btn.classList.remove('border-indigo-500', 'bg-indigo-500/10');
-                btn.classList.add('border-slate-700', 'bg-slate-800/50');
-            });
-            event.currentTarget.classList.remove('border-slate-700', 'bg-slate-800/50');
-            event.currentTarget.classList.add('border-indigo-500', 'bg-indigo-500/10');
+            showToast(`Selected ${method}`);
         }
 
         function processWithdrawal() {
             const acc = document.getElementById('withdrawAccount').value;
             const amt = parseFloat(document.getElementById('withdrawAmount').value);
-
             if (!acc || !amt) {
-                showToast('Please enter account number and amount!');
-                return;
-            }
-            if (amt < 1.00) {
-                showToast('Minimum withdrawal is $1.00');
+                showToast('Please fill all fields!');
                 return;
             }
             if (amt > appState.balance) {
                 showToast('Insufficient balance!');
                 return;
             }
-
             appState.balance -= amt;
             renderApp();
-            showToast('Withdrawal request submitted!');
-
-            const history = document.getElementById('withdrawHistory');
-            history.innerHTML = `
-                <div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 text-left">
-                    <div>
-                        <p class="font-bold text-slate-200">${appState.paymentMethod} - ${acc}</p>
-                        <p class="text-[10px] text-amber-400">Pending Review</p>
-                    </div>
-                    <span class="font-bold text-emerald-400">$${amt.toFixed(2)}</span>
-                </div>
-            `;
+            showToast('Withdrawal Requested!');
         }
 
-        // Admin Toggle
         function toggleViewMode() {
             appState.isAdmin = !appState.isAdmin;
-            const uViews = document.getElementById('userViews');
-            const aViews = document.getElementById('adminViews');
-            const nav = document.getElementById('userBottomNav');
-            const modeText = document.getElementById('modeText');
-
             if (appState.isAdmin) {
-                uViews.classList.add('hidden');
-                aViews.classList.remove('hidden');
-                nav.classList.add('hidden');
-                modeText.innerText = 'User View';
-                showToast('Switched to Admin Panel');
+                document.getElementById('userViews').classList.add('hidden');
+                document.getElementById('userBottomNav').classList.add('hidden');
+                document.getElementById('adminViews').classList.remove('hidden');
+                document.getElementById('modeText').innerText = 'User Mode';
             } else {
-                uViews.classList.remove('hidden');
-                aViews.classList.add('hidden');
-                nav.classList.remove('hidden');
-                modeText.innerText = 'Admin';
-                showToast('Switched to User App');
+                document.getElementById('adminViews').classList.add('hidden');
+                document.getElementById('userViews').classList.remove('hidden');
+                document.getElementById('userBottomNav').classList.remove('hidden');
+                document.getElementById('modeText').innerText = 'Admin';
             }
         }
 
@@ -664,51 +596,31 @@
             const reward = parseFloat(document.getElementById('newTaskReward').value) || 0.05;
             const timer = parseInt(document.getElementById('newTaskTimer').value) || 10;
 
-            if (!title || !url) {
-                showToast('Fill in title and URL');
-                return;
+            if (title && url) {
+                appState.tasks.push({ id: Date.now(), title, url, reward, timer, completed: false });
+                renderTasks();
+                showToast('New Task Created!');
             }
-
-            appState.tasks.push({
-                id: Date.now(),
-                title: title,
-                url: url,
-                reward: reward,
-                timer: timer,
-                completed: false
-            });
-
-            showToast('New Task Created!');
-            renderTasks();
         }
 
         function publishNewVideo() {
             const title = document.getElementById('newVidTitle').value;
-            const thumb = document.getElementById('newVidThumb').value || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60';
-            const cat = document.getElementById('newVidCat').value;
-            const ads = parseInt(document.getElementById('newVidAds').value) || 2;
+            const thumb = document.getElementById('newVidThumb').value || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600';
+            const category = document.getElementById('newVidCat').value;
+            const adsNeeded = parseInt(document.getElementById('newVidAds').value) || 1;
 
-            if (!title) {
-                showToast('Enter video title');
-                return;
+            if (title) {
+                appState.videos.push({ id: Date.now(), title, category, thumb, adsNeeded, adsWatched: 0, unlocked: false });
+                renderVideos();
+                showToast('Video Published!');
             }
-
-            appState.videos.unshift({
-                id: Date.now(),
-                title: title,
-                category: cat,
-                thumb: thumb,
-                adsNeeded: ads,
-                adsWatched: 0,
-                unlocked: false
-            });
-
-            showToast('Video Published & Broadcasted!');
-            renderVideos();
         }
 
         function copyRefLink() {
-            showToast('Referral link copied to clipboard!');
+            const copyText = document.getElementById("refLinkInput");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            showToast('Referral Link Copied!');
         }
 
         function showToast(msg) {
