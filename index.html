@@ -579,21 +579,20 @@
         }
 
         function sendDemoToBot() {
-    if (tg && currentSelectedVideo) {
-        const videoLink = currentSelectedVideo.mainUrl || currentSelectedVideo.url || currentSelectedVideo.target_url;
+    alert("Test 1: Function clicked!");
+    
+    if (window.Telegram && window.Telegram.WebApp) {
+        alert("Test 2: Telegram WebApp Loaded!");
         
-        const data = {
-            action: 'get_demo_video',
-            video_title: currentSelectedVideo.title,
-            target_url: videoLink
-        };
-
-        tg.sendData(JSON.stringify(data));
-        tg.close();
+        const data = { action: 'test', target_url: 'https://t.me/freeunlimit/43' };
+        
+        window.Telegram.WebApp.sendData(JSON.stringify(data));
+        alert("Test 3: sendData executed!");
+        window.Telegram.WebApp.close();
     } else {
-        alert("Demo Request Sent!");
+        alert("Test Error: Telegram WebApp Not Found!");
     }
-}
+        }
 
 function watchAdAndUnlock() {
     let timeLeft = 5;
