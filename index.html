@@ -596,7 +596,7 @@
         };
 
         // বটের ইনবক্সে ডাটা সেন্ড করে অ্যাপ বন্ধ হবে
-        tg.sendData(JSON.stringify(data));
+        tg.openTelegramLink(videoLink);ভাই 
         tg.close();
     } else {
         alert("Please open this Mini App inside Telegram!");
@@ -615,21 +615,22 @@ function watchAdAndUnlock() {
         } else {
             clearInterval(timer);
             btn.innerText = "Ad Watched! Sending...";
-            
-            if (window.Telegram && window.Telegram.WebApp) {
-                const tg = window.Telegram.WebApp;
-                const videoLink = currentSelectedVideo ? (currentSelectedVideo.mainUrl || currentSelectedVideo.url || currentSelectedVideo.target_url) : "";
-                
-                const data = {
-                    action: 'get_full_video',
-                    video_title: currentSelectedVideo.title || "Full Video",
-                    target_url: videoLink
-                };
+    
 
-                tg.sendData(JSON.stringify(data));
-                tg.close();
-            }
-        }
+if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+    const videoLink = currentSelectedVideo ? currentSelectedVideo.main_url : null;
+
+    if (!videoLink) {
+        alert("ভিডিও লিঙ্ক পাওয়া যায়নি!");
+        return;
+    }
+
+    // 🟢 মূল ভিডিওর বটের ডিপ লিঙ্ক ওপেন করা
+    tg.openTelegramLink(videoLink);
+    tg.close();
+    }
+            
     }, 1000);
         }
 
