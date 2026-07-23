@@ -895,6 +895,40 @@ function openVideoInBot(videoLink) {
 
   // পেজ লোড হলেই ফায়ারবেস থেকে সব ভিডিও এনে স্ক্রিনে দেখাবে
   document.addEventListener("DOMContentLoaded", loadVideosFromFirebase);
+    // ১. স্থানীয় মেমরিতে (LocalStorage) পোস্ট সেভ করা
+function saveVideoToLocal(title, mainUrl, demoUrl, thumbnail, category, ads) {
+    let currentVideos = JSON.parse(localStorage.getItem("app_videos")) || [];
+    
+    let newVideo = {
+        id: Date.now(),
+        title: title,
+        main_url: mainUrl,
+        demo_url: demoUrl,
+        thumbnail_url: thumbnail,
+        category: category,
+        ads_required: ads
+    };
+
+    currentVideos.unshift(newVideo); // নতুন পোস্ট সবার উপরে থাকবে
+    localStorage.setItem("app_videos", JSON.stringify(currentVideos));
+
+    alert("✅ পোস্ট সেভ হয়েছে! এখন রিফ্রেশ করলেও যাবে না।");
+    location.reload(); // পেজ অটো রিফ্রেশ হবে ডাটা দেখানোর জন্য
+}
+
+// ২. পেজ লোড হলেই জমানো সব পোস্ট নিয়ে আসবে
+function loadLocalVideos() {
+    let savedVideos = JSON.parse(localStorage.getItem("app_videos")) || [];
+    
+    if (savedVideos.length > 0) {
+        console.log("সেভ থাকা পোস্টসমূহ:", savedVideos);
+        if (typeof appState !== 'undefined') appState.videos = savedVideos;
+        if (typeof renderVideos === 'function') renderVideos(savedVideos);
+    }
+}
+
+// পেজ রিফ্রেশ বা ওপেন হলেই অটো রান হবে
+document.addEventListener("DOMContentLoaded", loadLocalVideos);
 </script>// অ্যাডমিন ফরম সাবমিট হ্যান্ডলার
 const publishForm = document.querySelector('form') || document.getElementById('videoForm');
 
