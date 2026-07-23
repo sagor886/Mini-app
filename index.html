@@ -305,7 +305,19 @@
                         </div>
                     </div>
                     <button onclick="publishNewVideo()" class="w-full bg-purple-600 hover:bg-purple-700 font-bold text-xs py-2.5 rounded-xl text-white transition">Publish & Broadcast Video</button>
-                    // অ্যাডমিন ফরম সাবমিট বাটন
+                    document.querySelector(".publish-btn").addEventListener("click", function(e) {
+    e.preventDefault();
+    
+    // ফরমের ডাটাগুলো নেওয়া
+    let title = document.querySelector('input[placeholder*="Clip"]').value;
+    let mainUrl = document.querySelector('input[placeholder*="Main Video"]').value;
+    let demoUrl = document.querySelector('input[placeholder*="Preview"]').value;
+    let thumbnail = document.querySelector('input[placeholder*="ibb.co"]').value;
+    let category = document.querySelector('select').value;
+    let ads = document.querySelector('input[type="number"]').value || 2;
+
+    saveVideoToLocal(title, mainUrl, demoUrl, thumbnail, category, ads);
+});
 const publishBtn = document.getElementById("publishBtn"); // বা আপনার বাটনের ID
 
 publishBtn.addEventListener("click", function(e) {
