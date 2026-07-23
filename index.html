@@ -1,4 +1,102 @@
 <!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Mini App with Admin Panel</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #121212; color: white; padding: 15px; margin: 0; }
+        .admin-box { background: #252525; border: 1px solid #444; border-radius: 8px; padding: 12px; margin-bottom: 20px; }
+        .admin-box h3 { margin-top: 0; color: #ff9800; font-size: 16px; }
+        input { width: 93%; padding: 8px; margin-bottom: 8px; border-radius: 4px; border: 1px solid #555; background: #333; color: white; }
+        .btn-add { background: #ff9800; color: black; font-weight: bold; width: 100%; border: none; padding: 8px; border-radius: 4px; cursor: pointer; }
+        
+        .card { background: #1e1e1e; border-radius: 10px; padding: 12px; margin-bottom: 15px; text-align: center; border: 1px solid #333; }
+        .card h3 { margin: 10px 0; font-size: 16px; color: #4caf50; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+        button { flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-demo { background: #008cba; color: white; }
+        .btn-unlock { background: #4caf50; color: white; }
+    </style>
+</head>
+<body>
+
+    <!-- 🛠️ ADMIN PANEL SECTION -->
+    <div class="admin-box">
+        <h3>➕ Admin Panel: Add New Video Link</h3>
+        <input type="text" id="videoTitle" placeholder="Video Title (e.g. Video 01)">
+        <input type="text" id="videoLink" placeholder="Telegram Post Link (e.g. https://t.me/channel/43)">
+        <button class="btn-add" onclick="addVideo()">Add Video Link</button>
+    </div>
+
+    <h2>🎬 Available Videos</h2>
+    <div id="videoList"></div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // লোকাল স্টোরেজ থেকে সেভ হওয়া ভিডিও ডাটা নিয়ে আসা
+        let videoData = JSON.parse(localStorage.getItem('my_videos')) || [
+            { title: "Demo Default Video", link: "https://t.me/freeunlimit/43" }
+        ];
+
+        // ভিডিও কার্ড রেন্ডার করা
+        function renderVideos() {
+            const listContainer = document.getElementById('videoList');
+            listContainer.innerHTML = "";
+
+            videoData.forEach((video, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h3>${video.title}</h3>
+                    <div class="btn-group">
+                        <button class="btn-demo" onclick="sendToBot('demo', '${video.link}')">Demo Video</button>
+                        <button class="btn-unlock" onclick="sendToBot('full', '${video.link}')">Watch Ad & Unlock</button>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
+        }
+
+        // অ্যাডমিন থেকে নতুন ভিডিও লিংক যোগ করার ফাংশন
+        function addVideo() {
+            const titleInput = document.getElementById('videoTitle').value;
+            const linkInput = document.getElementById('videoLink').value;
+
+            if (!titleInput || !linkInput) {
+                alert("দয়া করে টাইটেল এবং লিংক দুটিই দিন!");
+                return;
+            }
+
+            videoData.push({ title: titleInput, link: linkInput });
+            localStorage.setItem('my_videos', JSON.stringify(videoData));
+
+            document.getElementById('videoTitle').value = "";
+            document.getElementById('videoLink').value = "";
+
+            renderVideos();
+            alert("নতুন ভিডিও সফলভাবে যোগ হয়েছে!");
+        }
+
+        // বটের কাছে ভিডিও লিংক পাঠানোর ফাংশন
+        function sendToBot(type, link) {
+            const payload = {
+                action: type,
+                target_url: link
+            };
+
+            tg.sendData(JSON.stringify(payload));
+            tg.close();
+        }
+
+        // প্রথমবার পেজ লোড হলে রেন্ডার করা
+        renderVideos();
+    </script>
+</body>
+</html>
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
