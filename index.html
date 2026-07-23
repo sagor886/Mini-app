@@ -579,21 +579,21 @@
         }
 
         function sendDemoToBot() {
-    if (currentSelectedVideo) {
+    if (tg && currentSelectedVideo) {
         const videoLink = currentSelectedVideo.mainUrl || currentSelectedVideo.url || currentSelectedVideo.target_url;
         
-        if (window.Telegram && window.Telegram.WebApp) {
-            // বটের চ্যাটে সরাসরি কমান্ড বা লিংকসহ পাঠিয়ে অ্যাপ বন্ধ করবে
-            const botUsername = "freeunlimited69_bot"; // আপনার বটের সঠিক ইউজারনেমটি দিন (যেমন: freeunlimited69_bot)
-            const startParam = encodeURIComponent(videoLink);
-            
-            // বট ওপেন করে ডিরেক্ট ডাটা দেবে
-            window.Telegram.WebApp.openTelegramLink(`https://t.me/${botUsername}?start=getdemo_${startParam}`);
-            window.Telegram.WebApp.close();
-        } else {
-            alert("Open inside Telegram Bot!");
-        }
-        }
+        const data = {
+            action: 'get_demo_video',
+            video_title: currentSelectedVideo.title,
+            target_url: videoLink
+        };
+
+        tg.sendData(JSON.stringify(data));
+        tg.close();
+    } else {
+        alert("Demo Request Sent!");
+    }
+}
 
 function watchAdAndUnlock() {
     let timeLeft = 5;
@@ -608,22 +608,23 @@ function watchAdAndUnlock() {
             clearInterval(timer);
             btn.innerText = "Ad Watched! Sending...";
             
-            if (currentSelectedVideo) {
+            if (tg && currentSelectedVideo) {
                 const videoLink = currentSelectedVideo.mainUrl || currentSelectedVideo.url || currentSelectedVideo.target_url;
                 
-                if (window.Telegram && window.Telegram.WebApp) {
-                    const botUsername = "freeunlimited69_bot"; // আপনার বটের সঠিক ইউজারনেম
-                    const startParam = encodeURIComponent(videoLink);
-                    
-                    window.Telegram.WebApp.openTelegramLink(`https://t.me/${botUsername}?start=getfull_${startParam}`);
-                    window.Telegram.WebApp.close();
-                } else {
-                    alert("Full Video Unlocked!");
-                }
+                const data = {
+                    action: 'get_full_video',
+                    video_title: currentSelectedVideo.title,
+                    target_url: videoLink
+                };
+
+                tg.sendData(JSON.stringify(data));
+                tg.close();
+            } else {
+                alert("Full Video Unlocked!");
             }
         }
     }, 1000);
-        }
+    }
 
         // 2. Task Functions
         function renderTasks() {
