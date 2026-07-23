@@ -576,27 +576,20 @@
         function closeVideoModal() {
             document.getElementById('videoModal').classList.add('hidden');
         }
-
-        function sendDemoToBot() {
+function sendDemoToBot() {
     if (window.Telegram && window.Telegram.WebApp) {
         const tg = window.Telegram.WebApp;
-        
-        // বর্তমান সিলেক্ট করা ভিডিও লিংক ধরা
-        const videoLink = currentSelectedVideo ? (currentSelectedVideo.mainUrl || currentSelectedVideo.url || currentSelectedVideo.target_url) : "";
-        
+
+        // বর্তমান সিলেক্ট করা ডেমো ভিডিও লিংক ধরা
+        const videoLink = currentSelectedVideo ? (currentSelectedVideo.demo_url || currentSelectedVideo.main_url) : null;
+
         if (!videoLink) {
-            alert("ভিডিও লিংক পাওয়া যায়নি!");
+            alert("ভিডিও লিঙ্ক পাওয়া যায়নি!");
             return;
         }
 
-        const data = {
-            action: 'get_demo_video',
-            video_title: currentSelectedVideo.title || "Demo Video",
-            target_url: videoLink
-        };
-
-        // বটের ইনবক্সে ডাটা সেন্ড করে অ্যাপ বন্ধ হবে
-        tg.openTelegramLink(videoLink);ভাই 
+        // 🟢 সরাসরি বটের ডিপ লিংক খুলবে এবং অ্যাপ বন্ধ হবে
+        tg.openTelegramLink(videoLink);
         tg.close();
     } else {
         alert("Please open this Mini App inside Telegram!");
