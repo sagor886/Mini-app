@@ -305,6 +305,28 @@
                         </div>
                     </div>
                     <button onclick="publishNewVideo()" class="w-full bg-purple-600 hover:bg-purple-700 font-bold text-xs py-2.5 rounded-xl text-white transition">Publish & Broadcast Video</button>
+                    // অ্যাডমিন ফরম সাবমিট বাটন
+const publishBtn = document.getElementById("publishBtn"); // বা আপনার বাটনের ID
+
+publishBtn.addEventListener("click", function(e) {
+    e.preventDefault();
+
+    // ইনপুট ফিল্ড থেকে ডাটা নেওয়া
+    const title = document.getElementById("videoTitle").value;
+    const mainUrl = document.getElementById("telegramMainLink").value;
+    const demoUrl = document.getElementById("demoLink").value;
+    const thumbnail = document.getElementById("thumbnailUrl").value;
+    const category = document.getElementById("categorySelect").value;
+    const ads = document.getElementById("adsRequired").value;
+
+    if(!title || !mainUrl) {
+        alert("দয়া করে টাইটেল এবং ভিডিও লিংকটি দিন!");
+        return;
+    }
+
+    // ফায়ারবেসে সেভ করার ফাংশন কল
+    saveVideoToFirebase(title, mainUrl, demoUrl, thumbnail, category, ads);
+});
                 </div>
             </div>
 
