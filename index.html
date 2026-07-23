@@ -565,60 +565,65 @@
 
         // New Pop-Up Functions (In-App Player-এর বদলে কাজ করবে)
         function openVideoModal(vidId) {
-            const vid = appState.videos.find(v => v.id === vidId);
-            if(!vid) return;
+    // যদি সরাসরি আইডি বা অবজেক্ট আসে
+    const vid = typeof vidId === 'object' ? vidId : appState.videos.find(v => v.id === vidId);
+    if (!vid) return;
 
-            currentSelectedVideo = vid;
-            document.getElementById('modalVideoTitle').innerText = vid.title;
-            document.getElementById('modalImg').src = vid.thumb;
-            document.getElementById('videoModal').classList.remove('hidden');
+    currentSelectedVideo = vid;
+    document.getElementById('modalVideoTitle').innerText = vid.title;
+    document.getElementById('modalImg').src = vid.thumb;
+    document.getElementById('videoModal').classList.remove('hidden');
         }
-
         function closeVideoModal() {
             document.getElementById('videoModal').classList.add('hidden');
         }
 
         function sendDemoToBot() {
+    if (tg && currentSelectedVideo) {
+        // mainUrl অথবা target_url যা-ই থাকুক না কেন তা ধরবে
+        const videoLink = currentSelectedVideo.mainUrl || currentSelectedVideo.url || currentSelectedVideo.target_url;
+        
+        const data = {
+            action: 'get_demo_video',
+            video_title: currentSelectedVideo.title,
+            target_url: videoLink
+        };
+        tg.sendData(JSON.stringify(data));
+        tg.close();
+    } else {
+        alert("Demo Request Sent to Bot!");
+    }
+}
+
+function watchAdAndUnlock() {
+    let timeLeft = 5;
+    const btn = document.getElementById('adBtn');
+    btn.disabled = true;
+
+    let timer = setInterval(() => {
+        if (timeLeft > 0) {
+            btn.innerText = `Watching Ad... (${timeLeft}s)`;
+            timeLeft--;
+        } else {
+            clearInterval(timer);
+            btn.innerText = "Ad Watched! Sending...";
+            
             if (tg && currentSelectedVideo) {
+                const videoLink = currentSelectedVideo.mainUrl || currentSelectedVideo.url || currentSelectedVideo.target_url;
+                
                 const data = {
-                    action: 'get_demo_video',
+                    action: 'get_full_video',
                     video_title: currentSelectedVideo.title,
-                    target_url: currentSelectedVideo.mainUrl
+                    target_url: videoLink
                 };
                 tg.sendData(JSON.stringify(data));
                 tg.close();
             } else {
-                alert("Demo Request Sent to Bot!");
+                alert("Full Video Sent to Bot Inbox!");
             }
         }
-
-        function watchAdAndUnlock() {
-            let timeLeft = 5;
-            const btn = document.getElementById('adBtn');
-            btn.disabled = true;
-
-            let timer = setInterval(() => {
-                if (timeLeft > 0) {
-                    btn.innerText = `Watching Ad... (${timeLeft}s)`;
-                    timeLeft--;
-                } else {
-                    clearInterval(timer);
-                    btn.innerText = "Ad Watched! Sending...";
-                    
-                    if (tg && currentSelectedVideo) {
-                        const data = {
-                            action: 'get_full_video',
-                            video_title: currentSelectedVideo.title,
-                            target_url: currentSelectedVideo.mainUrl
-                        };
-                        tg.sendData(JSON.stringify(data));
-                        tg.close();
-                    } else {
-                        alert("Full Video Sent to Bot Inbox!");
-                    }
-                }
-            }, 1000);
-        }
+    }, 1000);
+            }
 
         // 2. Task Functions
         function renderTasks() {
