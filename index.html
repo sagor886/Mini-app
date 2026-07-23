@@ -799,7 +799,18 @@ function watchAdAndUnlock() {
             refInput.select();
             document.execCommand('copy');
             showToast("Referral link copied!");
-        }
+       // মিনি অ্যাপের JS কোডে ভিডিও প্লে বাটনে এই কোডটি যুক্ত করুন
+function openVideoInBot(videoLink) {
+    // উদাহরণ: videoLink = "https://t.me/freeunlimited69_bot?start=vid_x8k2p"
+    
+    if (window.Telegram && window.Telegram.WebApp) {
+        // মিনি অ্যাপ থেকে সরাসরি বটের চ্যাটে নিয়ে যাবে
+        window.Telegram.WebApp.openTelegramLink(videoLink);
+    } else {
+        // ব্রাউজারে টেস্ট করার জন্য
+        window.open(videoLink, '_blank');
+    }
+     }
     </script>
 </body>
 </html>
