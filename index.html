@@ -5,25 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Telegram Earn & Watch Mini App</title>
     <!-- Telegram WebApp SDK -->
-    // টেলিগ্রাম ওয়েব অ্যাপ অবজেক্ট ইনিশিয়ালাইজ করা
-const tg = window.Telegram.WebApp;
-tg.expand(); // মিনি অ্যাপটি ফুল স্ক্রিন করার জন্য
-
-// যখন কেউ "Full Video" বা "Demo Video" বাটনে ক্লিক করবে
-function sendDataToBot(actionType, videoTitle, videoUrl) {
-    // যে ডেটাগুলো আপনি বটের কাছে পাঠাতে চান
-    const dataToSend = {
-        action: actionType,       // "get_full_video" অথবা "get_demo_video"
-        video_title: videoTitle,  // ভিডিওর নাম
-        target_url: videoUrl      // ভিডিওর লিংক বা ফাইল আইডি
-    };
-
-    // টেলিগ্রামের মাধ্যমে পাইথন বটে ডেটা সেন্ড করা
-    tg.sendData(JSON.stringify(dataToSend));
-    
-    // ডেটা পাঠানোর পর মিনি অ্যাপ বন্ধ হয়ে যাবে এবং বটে মেসেজ চলে যাবে
-    tg.close();
-}
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -143,7 +124,7 @@ function sendDataToBot(actionType, videoTitle, videoUrl) {
                 </div>
 
                 <!-- Video Grid -->
-                <div class="space-y-4" id="videoFeed">
+                <div class="grid grid-cols-2 gap-3" id="videoFeed">
                     <!-- Dynamic Video Items -->
                 </div>
             </section>
@@ -159,7 +140,6 @@ function sendDataToBot(actionType, videoTitle, videoUrl) {
                         <i class="fa-solid fa-bolt text-lg"></i>
                     </div>
                 </div>
-
                 <div class="space-y-3" id="taskList">
                     <!-- Dynamic Tasks -->
                 </div>
@@ -171,9 +151,7 @@ function sendDataToBot(actionType, videoTitle, videoUrl) {
                     <p class="text-xs font-medium text-slate-400">Total Available Balance</p>
                     <h1 class="text-3xl font-black text-emerald-400 mt-1" id="withdrawBalance">$0.00</h1>
                     <p class="text-[11px] text-slate-400 mt-2">Minimum Withdrawal Limit: <span class="text-indigo-300 font-bold">$5.00</span></p>
-                    <p class="text-[10px] text-amber-400 mt-1 font-semibold">* Requirement: Must have at least 8 Active Refers to withdraw</p>
                 </div>
-
                 <div class="glass p-5 rounded-2xl border border-slate-800 space-y-4">
                     <h3 class="font-bold text-sm text-slate-200">Select Payout Method</h3>
                     <div class="grid grid-cols-3 gap-3">
@@ -187,34 +165,13 @@ function sendDataToBot(actionType, videoTitle, videoUrl) {
                         </button>
                         <button onclick="selectPaymentMethod('USDT', this)" class="pm-btn border border-slate-700 bg-slate-800/50 p-3 rounded-xl flex flex-col items-center gap-1">
                             <i class="fa-solid fa-coins text-emerald-400 text-xl"></i>
-                            <span class="text-xs font-bold">USDT (TON)</span>
+                            <span class="text-xs font-bold">USDT</span>
                         </button>
-                    </div>
-
-                    <div class="space-y-3 pt-2">
-                        <div>
-                            <label class="text-xs font-semibold text-slate-400 block mb-1">Account Number / Wallet Address</label>
-                            <input type="text" id="withdrawAccount" placeholder="01700000000 or Wallet Address" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold text-slate-400 block mb-1">Amount (USD $)</label>
-                            <input type="number" id="withdrawAmount" placeholder="5.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
-                        </div>
-                        <button onclick="processWithdrawal()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 rounded-xl shadow-lg transition text-sm">
-                            Submit Withdrawal Request
-                        </button>
-                    </div>
-                </div>
-
-                <div class="glass p-4 rounded-2xl border border-slate-800">
-                    <h4 class="font-bold text-xs text-slate-300 mb-2">Recent Withdrawal History</h4>
-                    <div id="withdrawHistory" class="text-xs text-slate-500 text-center py-4">
-                        No withdrawal requests yet.
                     </div>
                 </div>
             </section>
 
-            <!-- 4. PROFILE & REFERRAL TAB -->
+            <!-- 4. PROFILE TAB -->
             <section id="tab-profile" class="space-y-4 hidden">
                 <div class="glass p-5 rounded-2xl border border-slate-800 text-center relative">
                     <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 mx-auto flex items-center justify-center text-2xl font-black shadow-xl mb-3 border-4 border-slate-800">
@@ -222,212 +179,68 @@ function sendDataToBot(actionType, videoTitle, videoUrl) {
                     </div>
                     <h2 class="font-bold text-lg text-slate-100" id="profileName">User Name</h2>
                     <p class="text-xs text-indigo-400 font-medium" id="profileTag">@username</p>
-
-                    <div class="grid grid-cols-2 gap-3 mt-5 pt-4 border-t border-slate-800/80">
-                        <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
-                            <p class="text-[11px] text-slate-400">Referral Earnings</p>
-                            <p class="text-lg font-bold text-emerald-400" id="referralEarnings">$0.00</p>
-                        </div>
-                        <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
-                            <p class="text-[11px] text-slate-400">Active Refers</p>
-                            <p class="text-lg font-bold text-indigo-400" id="activeReferCount">0 Users</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Referral Box -->
-                <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/80 space-y-3">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-users text-indigo-400"></i>
-                            <h3 class="font-bold text-sm">Invite Friends</h3>
-                        </div>
-                        <span class="bg-emerald-500/20 text-emerald-300 font-extrabold text-[11px] px-2.5 py-1 rounded-full border border-emerald-500/30">per active refer earn $2</span>
-                    </div>
-                    <p class="text-xs text-slate-400">Share your referral link. Once your referred friend completes 5 referrals, they become an Active Refer and you earn $2.00 instantly!</p>
-                    <div class="flex gap-2">
-                        <input type="text" id="referralLinkInput" readonly value="https://t.me/freeunlimited69_bot?start=ref_12345" class="bg-slate-900 border border-slate-700 text-xs text-indigo-300 rounded-xl px-3 py-2 w-full focus:outline-none">
-                        <button onclick="copyRefLink()" class="bg-indigo-600 text-white font-bold text-xs px-4 py-2 rounded-xl hover:bg-indigo-700 transition">Copy</button>
-                    </div>
                 </div>
             </section>
 
         </div>
 
-        <!-- ADMIN GATEWAY MODAL (Password Lock) -->
-        <div id="adminAuthModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-            <div class="glass p-6 rounded-2xl border border-indigo-500/30 max-w-sm w-full space-y-4 text-center">
-                <div class="w-12 h-12 rounded-full bg-indigo-600/20 border border-indigo-500 text-indigo-400 flex items-center justify-center mx-auto text-xl">
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-                <h3 class="text-lg font-bold text-white">Admin Gateway Security</h3>
-                <p class="text-xs text-slate-400">Enter secret password to access Super Admin Panel.</p>
-                <input type="password" id="adminPassInput" placeholder="Enter Password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-center text-white focus:outline-none focus:border-indigo-500">
-                <div class="flex gap-2">
-                    <button onclick="closeAdminAuth()" class="w-1/2 bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs">Cancel</button>
-                    <button onclick="verifyAdminPassword()" class="w-1/2 bg-indigo-600 text-white font-bold py-2.5 rounded-xl text-xs">Secure Login</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ADMIN PANEL VIEW (Hidden by default) -->
+        <!-- ADMIN PANEL VIEW -->
         <div id="adminViews" class="hidden space-y-5">
             <div class="bg-indigo-950/80 border border-indigo-500/30 p-4 rounded-2xl flex items-center justify-between">
                 <div>
                     <span class="bg-indigo-500/20 text-indigo-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Super Admin</span>
                     <h2 class="text-lg font-black text-white mt-1">Admin Control Panel</h2>
                 </div>
-                <button onclick="exitAdminView()" class="bg-red-500/20 border border-red-500/40 text-red-300 text-xs px-3 py-1.5 rounded-xl font-bold">
-                    Exit Admin
-                </button>
+                <button onclick="exitAdminView()" class="bg-red-500/20 border border-red-500/40 text-red-300 text-xs px-3 py-1.5 rounded-xl font-bold">Exit</button>
             </div>
-
-            <!-- Admin Sub Navigation -->
-            <div class="flex gap-2 overflow-x-auto hide-scrollbar border-b border-slate-800 pb-2">
-                <button onclick="showAdminTab('adm-video')" class="adm-tab-btn bg-indigo-600 text-white text-xs font-semibold px-3 py-2 rounded-xl whitespace-nowrap">Upload Video Studio</button>
-                <button onclick="showAdminTab('adm-tasks')" class="adm-tab-btn bg-slate-800 text-slate-400 text-xs font-semibold px-3 py-2 rounded-xl whitespace-nowrap">Task Manager</button>
-                <button onclick="showAdminTab('adm-ads')" class="adm-tab-btn bg-slate-800 text-slate-400 text-xs font-semibold px-3 py-2 rounded-xl whitespace-nowrap">Ad Networks</button>
-                <button onclick="showAdminTab('adm-settings')" class="adm-tab-btn bg-slate-800 text-slate-400 text-xs font-semibold px-3 py-2 rounded-xl whitespace-nowrap">Core Settings</button>
+            <!-- Upload Studio -->
+            <div class="glass p-4 rounded-2xl border border-slate-800 space-y-3">
+                <h3 class="font-bold text-sm text-indigo-300">Video Upload Studio</h3>
+                <input type="text" id="newVidTitle" placeholder="Video Title" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs">
+                <input type="text" id="newVidMainUrl" placeholder="Main Video Link" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs">
+                <input type="text" id="newVidThumb" placeholder="Thumbnail URL" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs">
+                <button onclick="publishNewVideo()" class="w-full bg-purple-600 font-bold text-xs py-2.5 rounded-xl">Publish Video</button>
             </div>
-
-            <!-- Admin Tab 1: Upload Video Studio -->
-            <div id="adm-video" class="adm-subview space-y-4">
-                <div class="glass p-4 rounded-2xl border border-slate-800 space-y-3">
-                    <h3 class="font-bold text-sm text-indigo-300"><i class="fa-solid fa-clapperboard"></i> Video Upload Studio (Zomo V3)</h3>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Video Title</label>
-                        <input type="text" id="newVidTitle" placeholder="Exclusive Viral Clip #102" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Telegram Main Video Link / File ID</label>
-                        <input type="text" id="newVidMainUrl" placeholder="https://t.me/c/12345/67 or Telegram File ID" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Demo / Preview Video URL (Optional)</label>
-                        <input type="text" id="newVidDemoUrl" placeholder="https://t.me/c/12345/66 (Optional)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Thumbnail Image URL</label>
-                        <input type="text" id="newVidThumb" placeholder="https://i.ibb.co/..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="text-[11px] text-slate-400 block mb-1">Category</label>
-                            <select id="newVidCat" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                                <option value="Viral Video">Viral Video</option>
-                                <option value="Trending">Trending</option>
-                                <option value="Teasers">Teasers</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-[11px] text-slate-400 block mb-1">Ads Required to Unlock</label>
-                            <input type="number" id="newVidAds" value="2" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                        </div>
-                    </div>
-                    <button onclick="publishNewVideo()" class="w-full bg-purple-600 hover:bg-purple-700 font-bold text-xs py-2.5 rounded-xl text-white transition">Publish & Broadcast Video</button>
-                </div>
-            </div>
-
-            <!-- Admin Tab 2: Task Management -->
-            <div id="adm-tasks" class="adm-subview space-y-4 hidden">
-                <div class="glass p-4 rounded-2xl border border-slate-800 space-y-3">
-                    <h3 class="font-bold text-sm text-indigo-300">Create New Task</h3>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Task Type</label>
-                        <select id="newTaskType" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                            <option value="telegram">Telegram Channel/Group</option>
-                            <option value="website">Website Visit</option>
-                            <option value="direct">Direct Link / Monetag</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Task Title</label>
-                        <input type="text" id="newTaskTitle" placeholder="Join Official Channel" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Target URL</label>
-                        <input type="text" id="newTaskUrl" placeholder="https://t.me/..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="text-[11px] text-slate-400 block mb-1">Reward ($)</label>
-                            <input type="number" id="newTaskReward" placeholder="0.05" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                        </div>
-                        <div>
-                            <label class="text-[11px] text-slate-400 block mb-1">Timer (Sec)</label>
-                            <input type="number" id="newTaskTimer" placeholder="15" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                        </div>
-                    </div>
-                    <button onclick="createNewTask()" class="w-full bg-indigo-600 hover:bg-indigo-700 font-bold text-xs py-2.5 rounded-xl text-white transition">Publish Task</button>
-                </div>
-            </div>
-
-            <!-- Admin Tab 3: Ad Management -->
-            <div id="adm-ads" class="adm-subview space-y-4 hidden">
-                <div class="glass p-4 rounded-2xl border border-slate-800 space-y-3">
-                    <h3 class="font-bold text-sm text-indigo-300">Ad Network Integration</h3>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Network Name</label>
-                        <input type="text" placeholder="Monetag / Adsterra Direct" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Direct Link / Script Tag</label>
-                        <textarea rows="3" placeholder="https://www.highrevenuegate.com/..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200"></textarea>
-                    </div>
-                    <button onclick="showToast('Ad Configuration Saved!')" class="w-full bg-amber-600 hover:bg-amber-700 font-bold text-xs py-2.5 rounded-xl text-white transition">Save Ad Rotation</button>
-                </div>
-            </div>
-
-            <!-- Admin Tab 4: Core Settings -->
-            <div id="adm-settings" class="adm-subview space-y-4 hidden">
-                <div class="glass p-4 rounded-2xl border border-slate-800 space-y-3">
-                    <h3 class="font-bold text-sm text-indigo-300">Bot & Server Settings</h3>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Telegram Bot Username</label>
-                        <input type="text" value="@freeunlimited69_bot" readonly class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-400">
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-slate-400 block mb-1">Active Refer Reward ($)</label>
-                        <input type="number" value="2.00" readonly class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-400">
-                    </div>
-                    <button onclick="showToast('Core Settings Synced!')" class="w-full bg-emerald-600 hover:bg-emerald-700 font-bold text-xs py-2.5 rounded-xl text-white transition">Update Core Settings</button>
-                </div>
-            </div>
-
         </div>
 
     </main>
 
-    <!-- IN-APP VIDEO PLAYER MODAL -->
-    <div id="videoModal" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
-        <div class="glass border border-slate-700 rounded-2xl w-full max-w-lg overflow-hidden flex flex-col space-y-3 p-4">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                <h3 class="font-bold text-sm text-white" id="modalVideoTitle">Playing Video</h3>
-                <button onclick="closeVideoModal()" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="relative w-full h-56 bg-black rounded-xl overflow-hidden flex items-center justify-center">
-                <video id="inAppPlayer" controls autoplay class="w-full h-full object-contain"></video>
-            </div>
-            <p class="text-[11px] text-slate-400 text-center">Telegram CDN Fast Video Stream</p>
+    <!-- NEW POP-UP MODAL (REPLACES IN-APP PLAYER) -->
+    <div id="videoModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-amber-400 text-slate-900 p-5 rounded-2xl max-w-xs w-full text-center relative shadow-2xl border border-amber-300">
+            <!-- Close Button -->
+            <button onclick="closeVideoModal()" class="absolute right-3 top-2 text-slate-800 font-bold text-lg hover:text-black">✖</button>
+            
+            <!-- Video Thumbnail inside Modal -->
+            <img id="modalImg" src="" class="w-full h-36 object-cover rounded-xl mb-3 shadow-md border border-amber-500/30">
+            <h3 id="modalVideoTitle" class="font-bold text-sm mb-4 line-clamp-2"></h3>
+            
+            <!-- Action Buttons -->
+            <button onclick="sendDemoToBot()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs mb-2 transition shadow-md flex items-center justify-center gap-2">
+                <i class="fa-solid fa-eye"></i> Watch Demo
+            </button>
+            <button id="adBtn" onclick="watchAdAndUnlock()" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2">
+                <i class="fa-solid fa-play"></i> Watch Ad to Unlock
+            </button>
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar (User Panel) -->
+    <!-- Bottom Navigation Bar -->
     <nav id="userBottomNav" class="fixed bottom-0 left-0 right-0 glass border-t border-slate-800 px-6 py-2.5 z-40">
         <div class="flex justify-around items-center max-w-md mx-auto">
-            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center text-slate-400 hover:text-indigo-400 transition active-tab">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center text-slate-400 active-tab">
                 <i class="fa-solid fa-house text-lg"></i>
                 <span class="text-[10px] font-bold mt-1">Videos</span>
             </button>
-            <button onclick="switchTab('tasks')" id="nav-tasks" class="flex flex-col items-center text-slate-400 hover:text-indigo-400 transition">
+            <button onclick="switchTab('tasks')" id="nav-tasks" class="flex flex-col items-center text-slate-400">
                 <i class="fa-solid fa-list-check text-lg"></i>
                 <span class="text-[10px] font-bold mt-1">Tasks</span>
             </button>
-            <button onclick="switchTab('withdraw')" id="nav-withdraw" class="flex flex-col items-center text-slate-400 hover:text-indigo-400 transition">
+            <button onclick="switchTab('withdraw')" id="nav-withdraw" class="flex flex-col items-center text-slate-400">
                 <i class="fa-solid fa-money-bill-transfer text-lg"></i>
                 <span class="text-[10px] font-bold mt-1">Withdraw</span>
             </button>
-            <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center text-slate-400 hover:text-indigo-400 transition">
+            <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center text-slate-400">
                 <i class="fa-solid fa-user text-lg"></i>
                 <span class="text-[10px] font-bold mt-1">Profile</span>
             </button>
@@ -435,21 +248,14 @@ function sendDataToBot(actionType, videoTitle, videoUrl) {
     </nav>
 
     <!-- Notification Toast -->
-    <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-indigo-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2">
-        <i class="fa-solid fa-circle-check"></i>
+    <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-indigo-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none">
         <span id="toastMsg">Action completed!</span>
     </div>
 
     <!-- JavaScript Application Logic -->
     <script>
-        // App State Management
         let appState = {
             balance: 0.00,
-            activeRefers: 0,
-            referEarnings: 0.00,
-            isAdminAuthenticated: false,
-            activeTab: 'home',
-            paymentMethod: 'bKash',
             videos: [
                 {
                     id: 1,
@@ -457,10 +263,6 @@ function sendDataToBot(actionType, videoTitle, videoUrl) {
                     category: 'Viral Video',
                     thumb: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60',
                     mainUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-                    demoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-                    adsNeeded: 2,
-                    adsWatched: 0,
-                    unlocked: false
                 },
                 {
                     id: 2,
@@ -468,376 +270,87 @@ function sendDataToBot(actionType, videoTitle, videoUrl) {
                     category: 'Teasers',
                     thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=600&auto=format&fit=crop&q=60',
                     mainUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-                    demoUrl: '',
-                    adsNeeded: 1,
-                    adsWatched: 0,
-                    unlocked: false
-                }
-            ],
-            tasks: [
-                {
-                    id: 1,
-                    title: 'Join Telegram Channel',
-                    url: 'https://t.me/example',
-                    reward: 0.05,
-                    timer: 10,
-                    completed: false
-                },
-                {
-                    id: 2,
-                    title: 'Visit Direct Sponsor Link',
-                    url: 'https://monetag.com',
-                    reward: 0.10,
-                    timer: 15,
-                    completed: false
                 }
             ]
         };
 
-        // Initialize App
-        window.addEventListener('DOMContentLoaded', () => {
-            if (window.Telegram && window.Telegram.WebApp) {
-                const tg = window.Telegram.WebApp;
-                tg.expand();
-                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                    const u = tg.initDataUnsafe.user;
-                    document.getElementById('userName').innerText = `${u.first_name || ''} ${u.last_name || ''}`;
-                    document.getElementById('profileName').innerText = `${u.first_name || ''} ${u.last_name || ''}`;
-                    document.getElementById('userTag').innerText = u.username ? `@${u.username}` : '@user';
-                    document.getElementById('profileTag').innerText = u.username ? `@${u.username}` : '@user';
-                    document.getElementById('userAvatar').innerText = u.first_name ? u.first_name[0] : 'U';
-                    document.getElementById('profileAvatar').innerText = u.first_name ? u.first_name[0] : 'U';
-                    document.getElementById('referralLinkInput').value = `https://t.me/freeunlimited69_bot?start=${u.id}`;
-                }
-            }
-            renderApp();
-        });
+        const tg = window.Telegram ? window.Telegram.WebApp : null;
+        if (tg) tg.expand();
 
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').innerText = msg;
-            toast.classList.remove('opacity-0', 'pointer-events-none');
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'pointer-events-none');
-            }, 2500);
-        }
+        let currentSelectedVideo = null;
 
-        function renderApp() {
-            document.getElementById('userBalance').innerText = `$${appState.balance.toFixed(2)}`;
-            document.getElementById('withdrawBalance').innerText = `$${appState.balance.toFixed(2)}`;
-            document.getElementById('activeReferCount').innerText = `${appState.activeRefers} Users`;
-            document.getElementById('referralEarnings').innerText = `$${appState.referEarnings.toFixed(2)}`;
-
-            renderVideos();
-            renderTasks();
-        }
-
-        function fixImageUrl(url) {
-            if(!url) return 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60';
-            if (url.includes('ibb.co') && !url.includes('i.ibb.co')) {
-                return url.replace('ibb.co', 'i.ibb.co') + '.jpg';
-            }
-            return url;
-        }
-
-        function renderVideos(filterCat = 'All') {
+        // Render Video Feed
+        function renderVideos() {
             const feed = document.getElementById('videoFeed');
             feed.innerHTML = '';
-            
-            const filtered = filterCat === 'All' ? appState.videos : appState.videos.filter(v => v.category === filterCat);
-
-            if(filtered.length === 0) {
-                feed.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">No videos in this category.</p>`;
-                return;
-            }
-
-            filtered.forEach(v => {
-                const thumbUrl = fixImageUrl(v.thumb);
-                const card = document.createElement('div');
-                card.className = "glass rounded-2xl overflow-hidden border border-slate-800 shadow-md";
-                card.innerHTML = `
-                    <div class="relative h-44 w-full bg-slate-900">
-                        <img src="${thumbUrl}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                            ${v.unlocked ? 
-                                `<button onclick="playVideoModal('${v.mainUrl}', '${v.title}')" class="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xl shadow-lg hover:scale-105 transition"><i class="fa-solid fa-play ml-1"></i></button>` : 
-                                `<div class="text-center p-3">
-                                    <i class="fa-solid fa-lock text-3xl text-amber-400 mb-1"></i>
-                                    <p class="text-xs font-bold text-white">Locked Video</p>
-                                    ${v.demoUrl ? `<button onclick="playVideoModal('${v.demoUrl}', 'Demo - ${v.title}')" class="mt-1 text-[10px] bg-slate-800/80 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full"><i class="fa-solid fa-eye"></i> Watch Demo</button>` : ''}
-                                </div>`
-                            }
-                        </div>
-                        <span class="absolute top-3 left-3 bg-slate-900/80 text-indigo-300 text-[10px] font-bold px-2.5 py-1 rounded-full border border-slate-700">${v.category}</span>
-                    </div>
-                    <div class="p-4 space-y-3">
-                        <h4 class="font-bold text-sm text-slate-100">${v.title}</h4>
-                        ${v.unlocked ? 
-                            `<button onclick="playVideoModal('${v.mainUrl}', '${v.title}')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-circle-play"></i> Watch Full Video
-                            </button>` : 
-                            `<div class="flex items-center justify-between gap-3">
-                                <span class="text-xs text-slate-400">Ads: <b class="text-amber-400">${v.adsWatched}/${v.adsNeeded}</b></span>
-                                <button onclick="watchAdForVideo(${v.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition">
-                                    <i class="fa-solid fa-rectangle-ad"></i> Watch Ad to Unlock
-                                </button>
-                            </div>`
-                        }
+            appState.videos.forEach(v => {
+                feed.innerHTML += `
+                    <div onclick="openVideoModal('${v.title}', '${v.mainUrl}', '${v.thumb}')" class="bg-slate-800 border border-slate-700/80 rounded-xl overflow-hidden cursor-pointer active:scale-95 transition">
+                        <img src="${v.thumb}" class="w-full h-24 object-cover">
+                        <p class="text-xs p-2 font-semibold text-center line-clamp-1">${v.title}</p>
                     </div>
                 `;
-                feed.appendChild(card);
             });
         }
 
-        function filterCategory(cat) {
-            renderVideos(cat);
-        }
-
-        function renderTasks() {
-            const list = document.getElementById('taskList');
-            list.innerHTML = '';
-            appState.tasks.forEach(t => {
-                const item = document.createElement('div');
-                item.className = "glass p-4 rounded-2xl border border-slate-800 flex items-center justify-between";
-                item.innerHTML = `
-                    <div class="space-y-1">
-                        <h4 class="font-bold text-xs text-slate-200">${t.title}</h4>
-                        <p class="text-[11px] text-emerald-400 font-bold">Reward: +$${t.reward.toFixed(2)}</p>
-                    </div>
-                    ${t.completed ? 
-                        `<span class="bg-emerald-500/10 text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-xl border border-emerald-500/20"><i class="fa-solid fa-check"></i> Done</span>` : 
-                        `<button onclick="startTask(${t.id})" id="taskBtn-${t.id}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition">
-                            Start (${t.timer}s)
-                        </button>`
-                    }
-                `;
-                list.appendChild(item);
-            });
-        }
-
-        function switchTab(tab) {
-            appState.activeTab = tab;
-            ['home', 'tasks', 'withdraw', 'profile'].forEach(t => {
-                document.getElementById(`tab-${t}`).classList.add('hidden');
-                document.getElementById(`nav-${t}`).classList.remove('active-tab');
-            });
-            document.getElementById(`tab-${tab}`).classList.remove('hidden');
-            document.getElementById(`nav-${tab}`).classList.add('active-tab');
-        }
-
-        function watchAdForVideo(id) {
-            const v = appState.videos.find(item => item.id === id);
-            if (!v) return;
-
-            showToast("Opening Sponsor Ad...");
-            setTimeout(() => {
-                v.adsWatched += 1;
-                if (v.adsWatched >= v.adsNeeded) {
-                    v.unlocked = true;
-                    showToast("🎉 Video Unlocked!");
-                } else {
-                    showToast(`Ad Watched (${v.adsWatched}/${v.adsNeeded})`);
-                }
-                renderVideos();
-            }, 1000);
-        }
-
-        function playVideoModal(url, title) {
-            if(!url) {
-                showToast("Video Link Unavailable!");
-                return;
-            }
+        // Open Pop-Up Modal
+        function openVideoModal(title, url, thumb) {
+            currentSelectedVideo = { title, url, thumb };
             document.getElementById('modalVideoTitle').innerText = title;
-            const player = document.getElementById('inAppPlayer');
-            player.src = url;
+            document.getElementById('modalImg').src = thumb;
             document.getElementById('videoModal').classList.remove('hidden');
         }
 
         function closeVideoModal() {
-            const player = document.getElementById('inAppPlayer');
-            player.pause();
-            player.src = '';
             document.getElementById('videoModal').classList.add('hidden');
         }
 
-        function startTask(id) {
-            const task = appState.tasks.find(t => t.id === id);
-            if (!task || task.completed) return;
+        // Send Demo Video to Bot Inbox
+        function sendDemoToBot() {
+            if (tg) {
+                const data = {
+                    action: 'get_demo_video',
+                    video_title: currentSelectedVideo.title,
+                    target_url: currentSelectedVideo.url
+                };
+                tg.sendData(JSON.stringify(data));
+                tg.close();
+            } else {
+                alert("Telegram WebApp API not detected!");
+            }
+        }
 
-            window.open(task.url, '_blank');
-            const btn = document.getElementById(`taskBtn-${id}`);
-            let count = task.timer;
+        // Watch Ad & Send Full Video to Bot Inbox
+        function watchAdAndUnlock() {
+            let timeLeft = 5;
+            const btn = document.getElementById('adBtn');
             btn.disabled = true;
 
-            const interval = setInterval(() => {
-                btn.innerText = `Wait ${count}s`;
-                count--;
-                if (count < 0) {
-                    clearInterval(interval);
-                    task.completed = true;
-                    appState.balance += task.reward;
-                    renderApp();
-                    showToast(`Task Completed! +$${task.reward.toFixed(2)}`);
+            let timer = setInterval(() => {
+                if (timeLeft > 0) {
+                    btn.innerText = `Watching Ad... (${timeLeft}s)`;
+                    timeLeft--;
+                } else {
+                    clearInterval(timer);
+                    btn.innerText = "Ad Watched! Sending...";
+                    
+                    if (tg) {
+                        const data = {
+                            action: 'get_full_video',
+                            video_title: currentSelectedVideo.title,
+                            target_url: currentSelectedVideo.url
+                        };
+                        tg.sendData(JSON.stringify(data));
+                        tg.close();
+                    }
                 }
             }, 1000);
         }
 
-        function selectPaymentMethod(method, btn) {
-            appState.paymentMethod = method;
-            document.querySelectorAll('.pm-btn').forEach(b => {
-                b.classList.remove('border-2', 'border-indigo-500', 'bg-indigo-500/10');
-                b.classList.add('border-slate-700', 'bg-slate-800/50');
-            });
-            btn.classList.remove('border-slate-700', 'bg-slate-800/50');
-            btn.classList.add('border-2', 'border-indigo-500', 'bg-indigo-500/10');
-        }
-
-        function processWithdrawal() {
-            const acc = document.getElementById('withdrawAccount').value;
-            const amt = parseFloat(document.getElementById('withdrawAmount').value);
-
-            if (!acc) {
-                showToast("Please enter Account Number!");
-                return;
-            }
-            if (isNaN(amt) || amt < 5.00) {
-                showToast("Minimum withdrawal is $5.00!");
-                return;
-            }
-            if (amt > appState.balance) {
-                showToast("Insufficient Balance!");
-                return;
-            }
-            if (appState.activeRefers < 8) {
-                alert(`⚠️ Withdrawal Restriction!\n\nYou must have at least 8 Active Refers to withdraw.\n\nCurrent Active Refers: ${appState.activeRefers}/8`);
-                return;
-            }
-
-            appState.balance -= amt;
-            renderApp();
-            document.getElementById('withdrawHistory').innerHTML = `
-                <div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 mb-2">
-                    <div>
-                        <p class="font-bold text-slate-200">$${amt.toFixed(2)} (${appState.paymentMethod})</p>
-                        <p class="text-[10px] text-slate-500">${acc}</p>
-                    </div>
-                    <span class="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full font-bold">Pending</span>
-                </div>
-            `;
-            showToast("Withdrawal Submitted!");
-        }
-
-        function copyRefLink() {
-            const input = document.getElementById('referralLinkInput');
-            input.select();
-            document.execCommand('copy');
-            showToast("Referral Link Copied!");
-        }
-
-        // Admin Gateway & Security Logic
-        function toggleViewMode() {
-            if (!appState.isAdminAuthenticated) {
-                document.getElementById('adminAuthModal').classList.remove('hidden');
-            } else {
-                openAdminPanel();
-            }
-        }
-
-        function closeAdminAuth() {
-            document.getElementById('adminAuthModal').classList.add('hidden');
-        }
-
-        function verifyAdminPassword() {
-            const pass = document.getElementById('adminPassInput').value;
-            if (pass === 'sagor3044') {
-                appState.isAdminAuthenticated = true;
-                closeAdminAuth();
-                openAdminPanel();
-                showToast("Admin Security Verified!");
-            } else {
-                showToast("Incorrect Password!");
-            }
-        }
-
-        function openAdminPanel() {
-            document.getElementById('userViews').classList.add('hidden');
-            document.getElementById('userBottomNav').classList.add('hidden');
-            document.getElementById('adminViews').classList.remove('hidden');
-            document.getElementById('modeText').innerText = "User";
-        }
-
-        function exitAdminView() {
-            document.getElementById('adminViews').classList.add('hidden');
-            document.getElementById('userViews').classList.remove('hidden');
-            document.getElementById('userBottomNav').classList.remove('hidden');
-            document.getElementById('modeText').innerText = "Admin";
-        }
-
-        function showAdminTab(tabId) {
-            document.querySelectorAll('.adm-subview').forEach(v => v.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
-        }
-
-        function publishNewVideo() {
-            const title = document.getElementById('newVidTitle').value;
-            const mainUrl = document.getElementById('newVidMainUrl').value;
-            const demoUrl = document.getElementById('newVidDemoUrl').value;
-            const thumb = document.getElementById('newVidThumb').value;
-            const cat = document.getElementById('newVidCat').value;
-            const ads = parseInt(document.getElementById('newVidAds').value) || 2;
-
-            if (!title || !mainUrl) {
-                showToast("Title & Main Link are required!");
-                return;
-            }
-
-            const newVid = {
-                id: Date.now(),
-                title: title,
-                category: cat,
-                thumb: thumb,
-                mainUrl: mainUrl,
-                demoUrl: demoUrl,
-                adsNeeded: ads,
-                adsWatched: 0,
-                unlocked: false
-            };
-
-            appState.videos.unshift(newVid);
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
             renderVideos();
-            showToast("New Video Published!");
-            
-            document.getElementById('newVidTitle').value = '';
-            document.getElementById('newVidMainUrl').value = '';
-            document.getElementById('newVidDemoUrl').value = '';
-            document.getElementById('newVidThumb').value = '';
-        }
-
-        function createNewTask() {
-            const title = document.getElementById('newTaskTitle').value;
-            const url = document.getElementById('newTaskUrl').value;
-            const reward = parseFloat(document.getElementById('newTaskReward').value) || 0.05;
-            const timer = parseInt(document.getElementById('newTaskTimer').value) || 10;
-
-            if (!title || !url) {
-                showToast("Task Title and URL required!");
-                return;
-            }
-
-            appState.tasks.unshift({
-                id: Date.now(),
-                title: title,
-                url: url,
-                reward: reward,
-                timer: timer,
-                completed: false
-            });
-
-            renderTasks();
-            showToast("New Task Published!");
-            document.getElementById('newTaskTitle').value = '';
-            document.getElementById('newTaskUrl').value = '';
-        }
+        });
     </script>
 </body>
-  </html>
+</html>
